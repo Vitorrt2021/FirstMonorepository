@@ -1,6 +1,22 @@
 const pathLocalHost = 'http://localhost:3004/employees'
 
+preventReload()
 sendGet()
+
+addEvent('#form_button_reset',()=>hiddenElement('.form_post'))
+addEvent('#form_button_submit',()=>hiddenElement('.form_post'))
+addEvent('#form_put_button_reset',()=>hiddenElement('.form_put'))
+addEvent('#form_put_button_submit',()=>hiddenElement('.form_put'))
+
+addEvent('#form_button_submit',()=>{
+    let dados = createObjectEmployee();
+    if(dados) sendPost(dados)
+    sendGet()   
+})
+addEvent('.button_post',()=>{
+    showElement('.form_post');
+})
+
 addEvent('.button_ramal',()=>sendGet('/ramal'))
 addEvent('.button_birthdays',()=>{
     let month = prompt('Mes: ')
@@ -16,23 +32,109 @@ addEvent('table',(e)=>{
         path.map((element)=>{
             if(element.tagName === 'TR'){
                 sendDelete(element.id);
+                sendGet()   
+            }
+        })
+    }else if(e.target.className === "table_put_img"){
+        path.map((element)=>{
+            if(element.tagName === 'TR'){
+                formPutCreate(element.id);
             }
         })
     }
 })
 
+function formPutCreate(registrationNumber){
+    showElement('.form_put')
+    addEvent('#form_put_button_submit',()=>{
+        const selectElementType = document.querySelector('#form_put_type')
+        const type = selectElementType.options[selectElementType.selectedIndex].value
+        const value = getValue('#form_put_value')
+        if(!value ){
+            alert("Coloque todos os dados!")
+            return false
+        }
+        const data = {
+            type,
+            value
+        }
+        sendPut(registrationNumber,data)
+        sendGet()   
+    })    
+}
+function createObjectEmployee(){
+    const name = getValue('#form_post_name');
+    const email = getValue('#form_post_email');
+    const sector = getValue('#form_post_sector');
+    const branch = getValue('#form_post_ramal');
+    const birthDate = getValue('#form_post_birthday');
+    const registrationNumber = Math.floor(Math.random() * 100000);
+    if(!name || !email || !sector || !branch || !birthDate ){
+        alert("Coloque todos os dados!")
+        return false
+    }
+    const employee = {
+        name,
+        email,
+        sector,
+        branch,
+        birthDate,
+        registrationNumber
+    }
+    console.log(employee)
+    return employee    
+}
+function preventReload(){
+    document.querySelector('#form_button_submit').addEventListener('click',(e)=>{
+         e.preventDefault()
+    });
+    document.querySelector('#form_button_reset').addEventListener('click',(e)=>{
+        e.preventDefault()
+    });
+    document.querySelector('#form_put_button_submit').addEventListener('click',(e)=>{
+        e.preventDefault()
+    });
+    document.querySelector('#form_put_button_reset').addEventListener('click',(e)=>{
+        e.preventDefault()
+    });
+}
+
+function hiddenElement(element){
+    document.querySelector(element).style.display = 'none'
+}
+function showElement(element){
+    document.querySelector(element).style.display = 'block'
+}
+function getValue(element){
+    return document.querySelector(element).value
+}
 function addEvent(element,callback,type='click'){
     document.querySelector(element).addEventListener(type,callback)
 }
 
+function sendPut(registrationNumber,data){
+    const requestOptions={
+        method: "PUT",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data,)
+    }
+    request(pathLocalHost+"/"+registrationNumber,requestOptions,console.log)   
+}
 
-function sendDelete(id){
+function sendPost(data){
+    const requestOptions={
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    }
+    request(pathLocalHost,requestOptions,console.log);
+}
+function sendDelete(registrationNumber){
     const requestOptions={
         method: "DELETE",
         headers: { 'Content-Type': 'application/json' },
     }
-    request(pathLocalHost+"/"+id,requestOptions)
-    sendGet()   
+    request(pathLocalHost+"/"+registrationNumber,requestOptions)
 }
 
 function sendGet(path=' '){
@@ -72,6 +174,9 @@ function createLine(obj){
     line.append(createColumn(obj.birthDate,"birthDate"))
     line.append(createColumn(` <img src="./assets/icons/remove_circle_black_24dp.svg" class='table_delete_img' alt="Deletar">
     `,'delete'))
+    line.append(createColumn(` <img src="./assets/icons/settings_black_24dp.svg" class='table_put_img' alt="change">
+    `,'change'))
+
     line.setAttribute('id',obj.registrationNumber)
     line.setAttribute('class',"line_object")
     
@@ -102,3 +207,6 @@ function request(url,requestOptions,callback){
             alert(error.message)
         })
 }
+
+
+

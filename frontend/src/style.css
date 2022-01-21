@@ -37,7 +37,7 @@ input[type=checkbox]{
     align-items: center;
 }
 .container_buttons{
-    width: 250px;
+    width: 400px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -53,6 +53,12 @@ input[type=checkbox]{
 .button_ramal{
     width: 100px;
     background-color: sandybrown;
+}
+.button_post{
+    background-color: rgb(32, 160, 32);
+}
+.button_post:hover{
+    background-color: rgb(30, 114, 30);;
 }
 .button_ramal:hover{
     background-color: rgb(182, 128, 82);
@@ -89,4 +95,72 @@ th{
 
 .table_delete_img:hover{
     color: saddlebrown;
+}
+
+
+
+/* Formularios */
+form{
+    background-color: white;
+    border: solid 2px black;
+
+    position: absolute;
+    z-index: 4;
+
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+
+    width: 400px;
+    height: 400px;
+    padding: 10px;
+    border-radius: 5px;
+
+    font-size: 15px;
+}
+.form_put{
+    height: 250px;
+}
+form h3{
+    text-align: center;
+}
+.form_container{
+    display: flex;
+    flex-direction: column;
+}
+.form_container input{
+    height: 30px;
+    font-size: 15px;
+}
+.form_container select{
+    height: 30px;
+    font-size: 15px;
+}
+.form_buttons{
+    height: 100px;
+    width: 100%;
+
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.form_buttons input{
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    height: 50px;
+    border-radius: 10px;
+    border: none;
+}
+.form_buttons input[type='submit']{
+    background-color:#14a07d;
+}
+.form_buttons input[type='reset']{
+    background-color:#01A9F2;
+}
+.form_buttons input[type='submit']:hover{
+    background-color:#116852;
+}
+.form_buttons input[type='reset']:hover{
+    background-color:#0981b4;
 }
